@@ -16,6 +16,8 @@ builder.Configuration.AddAzureAppConfiguration(options =>
     // load all settings in addition to those with the label matching the environment
     options.Select("*").Select("*", environment);
 
+    //options.Select("*", environment);
+
     // or, select using a filter
     //options.Select("*").Select("Apis/*", environment);
 
@@ -27,7 +29,10 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         // trigger a refresh based on a change to this key
         // refreshAll: true will changed ALL keys when the value of THIS key is changed
         // https://learn.microsoft.com/en-us/azure/azure-app-configuration/enable-dynamic-configuration-aspnet-core?tabs=core6x#add-a-sentinel-key
-        options.Register("TestSetting", refreshAll: true);
+        //options.Register("TestSetting", "development", refreshAll: true);
+
+        // or, register all settings to refresh on change (scoped by .Select())
+        options.RegisterAll();
     });
 
     options.ConfigureKeyVault(options => 
