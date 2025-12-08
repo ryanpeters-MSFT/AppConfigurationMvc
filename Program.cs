@@ -1,6 +1,4 @@
 using Azure.Identity;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 
 var environment = "development";
 
@@ -9,11 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var connection = builder.Configuration["AppConfigurationConnection"];
+var endpoint = builder.Configuration["AppConfigurationEndpoint"]!;
 
 builder.Configuration.AddAzureAppConfiguration(options =>
 {
-    options.Connect(connection);
+    options.Connect(new Uri(endpoint), new DefaultAzureCredential());
 
     // load all settings in addition to those with the label matching the environment
     options.Select("*").Select("*", environment);
@@ -24,7 +22,7 @@ builder.Configuration.AddAzureAppConfiguration(options =>
     options.ConfigureRefresh(options => 
     {
         // force this setting to only refresh every 20 seconds
-        options.SetCacheExpiration(TimeSpan.FromSeconds(20));
+        options.SetRefreshInterval(TimeSpan.FromSeconds(20));
         
         // trigger a refresh based on a change to this key
         // refreshAll: true will changed ALL keys when the value of THIS key is changed
@@ -49,7 +47,8 @@ builder.Services.AddAzureAppConfiguration();
 
 var app = builder.Build();
 
-app.UseAzureAppConfiguration();
+// used for interval-based refresh
+//app.UseAzureAppConfiguration();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -3,12 +3,23 @@ using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 
 namespace AppConfigurationMvc.Controllers;
 
-public class HomeController : Controller
+public class HomeController(IConfigurationRefresherProvider refresherProvider, IConfiguration configuration) : Controller
 {
-    public IActionResult Index([FromServices] IConfiguration configuration)
+    [HttpGet("/")]
+    public IActionResult Index()
     {
         ViewBag.Configuration = configuration;
 
         return View();
+    }
+
+    [HttpGet("/refresh")]
+    public async Task<IActionResult> RefreshAsync()
+    {
+        var refreshers = refresherProvider.Refreshers;
+
+        await Task.WhenAll(refreshers.Select(r => r.TryRefreshAsync()));
+
+        return Ok("App configuration refreshed.");
     }
 }
