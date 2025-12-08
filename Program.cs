@@ -21,8 +21,8 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 
     options.ConfigureRefresh(options => 
     {
-        // force this setting to only refresh every 20 seconds
-        options.SetRefreshInterval(TimeSpan.FromSeconds(20));
+        // force this setting to only refresh every 10 seconds
+        options.SetRefreshInterval(TimeSpan.FromSeconds(10));
         
         // trigger a refresh based on a change to this key
         // refreshAll: true will changed ALL keys when the value of THIS key is changed
