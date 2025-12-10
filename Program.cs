@@ -13,6 +13,12 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 {
     options.Connect(new Uri(endpoint), new DefaultAzureCredential());
 
+    // enable load balancing across multiple instances
+    //options.LoadBalancingEnabled = true;
+
+    // optionally select a specific snapshot
+    //options.SelectSnapshot("test");
+
     // load all settings in addition to those with the label matching the environment
     options.Select("*").Select("*", environment);
 
