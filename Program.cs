@@ -1,6 +1,6 @@
 using Azure.Identity;
 
-var environment = "development";
+var environment = "production";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +29,13 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         // trigger a refresh based on a change to this key
         // refreshAll: true will changed ALL keys when the value of THIS key is changed
         // https://learn.microsoft.com/en-us/azure/azure-app-configuration/enable-dynamic-configuration-aspnet-core?tabs=core6x#add-a-sentinel-key
-        //options.Register("TestSetting", "development", refreshAll: true);
+        options.Register("Services/ClientServiceApi", refreshAll: true);
+        
+        // trigger a refresh based on a key and a label
+        //options.Register("TestSetting", environment, refreshAll: true);
 
         // or, register all settings to refresh on change (scoped by .Select())
-        options.RegisterAll();
+        //options.RegisterAll();
     });
 
     options.ConfigureKeyVault(options => 
